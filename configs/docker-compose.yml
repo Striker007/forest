@@ -1,0 +1,30 @@
+# JUST AN EXAMPLE
+proxy-nginx:
+  container_name: sandbox1_debian8_nginx
+  image: {docker_registry_ip_port}/debian8_nginx
+  ports:
+    - "{sandbox_ip}:80:80"
+  volumes:
+    - /data/docker_{sandbox_name}/site:/data/www/site/current/
+  links:
+    - webw-phpfpm56:phpfpm
+
+wdb-mongo30:
+  container_name: sandbox1_debian8_mongodb30
+  image: {docker_registry_ip_port}/debian8_mongodb30
+  volumes:
+    - /data/dumps/dump2:/data/dump
+     
+webw-phpfpm56:
+  container_name: sandbox1_debian8_phpfpm56
+  image: {docker_registry_ip_port}/debian8_phpfpm56
+  environment:
+    - APP_ENV=docker
+#  ports:
+#    - "9000:9000"
+  links:
+    - wdb-mongo30:mongo
+  volumes:
+    - /data/docker_{sandbox_name}/site:/data/www/site/current/
+
+
