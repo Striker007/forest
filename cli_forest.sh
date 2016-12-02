@@ -19,7 +19,6 @@ function cleanup()
 {
 	./cli_sandbox_destroy.sh "$sandbox_name"
 	return_to_root 
-	delete "$sandbox_name"
 }
 trap cleanup SIGHUP SIGINT SIGTERM
 

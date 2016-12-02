@@ -24,8 +24,9 @@ fi
 
 echo "START sandbox"
 return_to_root
-sandbox_config_create "$sandbox_name" chek_is_err
-sandbox_config_init_placeholders "$sandbox_name" "$sandbox_name/$conf_config_file_name" chek_is_err
+sandbox_config_create "$sandbox_name"; chek_is_err
+sandbox_ip=$(sandbox_get_ip_by_name "$sandbox_name"); chek_is_err
+sandbox_config_init_placeholders "$sandbox_name" "$sandbox_ip" "$sandbox_name/$conf_config_file_name"; chek_is_err
 
 # Bootstrap code - repo, configs, 3rd party, migrations
 return_to_root && source ./mod_git.sh
@@ -37,11 +38,12 @@ copy_repo_to_sandbox;                 chek_is_err
 
 # DOCKER-COMPOSE UP
 return_to_root && source ./mod_code_bootstrap.sh
-copy "configs/code_config.yml" "$sandbox_name/config.yml" chek_is_err
-cd "$sandbox_name"
+copy "configs/code_config.yml" "$sandbox_name/$conf_git_repo_name/app/config/config.yml"; chek_is_err
+cd "$sandbox_name" && cd "$conf_git_repo_name";            chek_is_err
 # 3rd party - composer.phar install .. npm install ..
-#install_libraries
-###docker-compose up -d
+install_libraries;                                         chek_is_err
+cd ../
+docker-compose up -d
 chek_is_err
 
 # Migrate

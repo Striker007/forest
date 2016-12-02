@@ -4,8 +4,14 @@ source ./forest.conf
 
 function migrate()
 {
-	docker exec -it sandbox1_debian8_mongodb30 mongo --eval "printjson(rs.initiate())"
+        local sandbox_name="$1"
+        if [ -z "$sandbox_name" ]; then
+	    echo "err: (migrate) sandbox name is empty"
+            return 1
+        fi
 
-	sleep 10
-	#docker exec -it sandbox1_debian8_mongodb30 mongorestore /data/www/site/current/docker/dump2
+	docker exec -it ${sandbox_name}_debian8_phpfpm56 chmod -R 777 /data/www/site/current/
+
 }
+
+migrate "sandbox_10"

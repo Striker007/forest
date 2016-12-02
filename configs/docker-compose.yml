@@ -1,22 +1,51 @@
-# JUST AN EXAMPLE
 proxy-nginx:
-  container_name: sandbox1_debian8_nginx
+  container_name: {sandbox_name}_debian8_nginx
   image: {docker_registry_ip_port}/debian8_nginx
   ports:
     - "{sandbox_ip}:80:80"
   volumes:
-    - /data/docker_{sandbox_name}/site:/data/www/site/current/
+    - {sandbox_code_dir}:/data/www/site/current/
   links:
     - webw-phpfpm56:phpfpm
 
+comet:
+  container_name: {sandbox_name}_debian8_comet
+  image: {docker_registry_ip_port}/debian8_comet
+  ports:
+    - "{sandbox_ip}:9090:9090"
+    - "{sandbox_ip}:9091:9091"
+    - "{sandbox_ip}:9092:9092"
+    - "{sandbox_ip}:9093:9093"
+  volumes:
+    - {sandbox_code_dir}/websockets:/data/websockets/current
+  links:
+    - wdb-redis:redis
+
 wdb-mongo30:
-  container_name: sandbox1_debian8_mongodb30
+  container_name: {sandbox_name}_debian8_mongodb30
   image: {docker_registry_ip_port}/debian8_mongodb30
   volumes:
     - /data/dumps/dump2:/data/dump
      
+#  volumes:
+#    - ./db:/data/db
+#  ports:
+#    - "27017:27017"
+
+wdb-redis:
+  container_name: {sandbox_name}_debian8_redis
+  image: {docker_registry_ip_port}/debian8_redis
+#  ports:
+#    - "6379:6379"
+
+wdb-memcached:
+  container_name: {sandbox_name}_debian8_memcached
+  image: {docker_registry_ip_port}/debian8_memcached
+#  ports:
+#    - "11211:11211"
+
 webw-phpfpm56:
-  container_name: sandbox1_debian8_phpfpm56
+  container_name: {sandbox_name}_debian8_phpfpm56
   image: {docker_registry_ip_port}/debian8_phpfpm56
   environment:
     - APP_ENV=docker
@@ -24,7 +53,23 @@ webw-phpfpm56:
 #    - "9000:9000"
   links:
     - wdb-mongo30:mongo
+    - wdb-redis:redis
+    - wdb-memcached:memcached
   volumes:
-    - /data/docker_{sandbox_name}/site:/data/www/site/current/
+    - {sandbox_code_dir}:/data/www/site/current/
+
+sys-phpfpm56:
+  container_name: {sandbox_name}_debian8_sys
+  image: {docker_registry_ip_port}/debian8_sys
+  environment:
+    - APP_ENV=docker
+#  ports:
+#    - "9000:9000"
+  links:
+    - wdb-mongo30:mongo
+    - wdb-redis:redis
+    - wdb-memcached:memcached
+  volumes:
+    - {sandbox_code_dir}:/data/www/site/current/
 
 

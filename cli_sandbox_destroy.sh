@@ -15,9 +15,10 @@ return_to_root
 
 container=$(docker ps -a --filter "name=$sandbox_name" -q)
 if [ ! -z "$container" ]; then
-	sudo docker stop "$container"
+	sudo docker stop $container
 	sleep 3
-	sudo docker rm "$container"
+	sudo docker rm $container
 fi
 
-delete  "$sandbox_name"
+delete  "$conf_dir_main/$sandbox_name"
+

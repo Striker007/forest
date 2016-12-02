@@ -7,5 +7,5 @@ replace_text() {
 	local placeholder="$2"
 	local value="$3"
 	
-	echo "$(echo "$text" | sed "s/$placeholder/$value/g")"
+	echo "$(echo "$text" | sed "s^$placeholder^$value^g")"
 }

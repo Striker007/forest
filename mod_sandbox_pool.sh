@@ -5,18 +5,29 @@ source ./forest.conf
 check_sandbox_name() {
 	local sandbox_name="$1"
 	#local username="$2"
-	if [ -z "$conf_sandboxes_pool" ]; then
+	if [ -z "$conf_sandboxes_name_pool" ]; then
 		echo "err: conf, sandboxes pool is empty"
     fi
 
-    ((n_elements=${#conf_sandboxes_pool[@]}, max_index=n_elements - 1))
+    #TODO check - is array
+    ((n_elements=${#conf_sandboxes_name_pool[@]}, max_index=n_elements - 1))
 
 	for ((i = 0; i <= max_index; i++)); do
-		if [ "$sandbox_name" == "${conf_sandboxes_pool[i]}" ]; then
+		if [ "$sandbox_name" == "${conf_sandboxes_name_pool[i]}" ]; then
+			echo "$i"
 			return 0 
 		fi
 	done
 
 	echo "err: cant find sandbox name in sandbox conf pool"
 	return 1		
+}
+
+sandbox_get_ip_by_name()
+{
+	local sandbox_name="$1"
+	local index=$(check_sandbox_name "$sandbox_name")
+
+	echo $(array_get_element_by_index $index "${conf_sandboxes_ip_pool[@]}")
+    chek_is_err
 }

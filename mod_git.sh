@@ -30,12 +30,12 @@ git_branches()
 git_clone()
 {
 	if [ ! -d "$conf_git_repo_name" ]; then
-		#su ci << 'EOF'
-        git clone "$conf_git_repo"
-#EOF
-    else 
-    	echo "err: dir with code exists"
-    	return 1
+	    su ci << EOF
+            git clone "$conf_git_repo"
+EOF
+	else 
+	    echo "err: dir with code already exists"
+    	    return 1
 	fi
 }
 
@@ -44,13 +44,13 @@ git_checkout_pull()
 	local ver="$1"
 
 	if [ -z "$ver" ]; then
-		#su ci << 'EOF'
+	su ci << 'EOF'
 		git checkout master
-#EOF
+EOF
 	else
-		#su ci << 'EOF'
+	su ci << 'EOF'
 		git checkout "$ver"
-# #EOF
+EOF
 	fi
 
 	if [ $? != 0 ]; then 
